@@ -5,6 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:killAfterRestore="false"
         android:label="@string/app_name"
         android:persistent="true"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -17,6 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".HomeOnClickService">
             <!-- 为防止Service被系统回收，可以通过提高优先级解决，1000是最高优先级，数字越小，优先级越低 -->
             <intent-filter android:priority="1000">
@@ -24,7 +26,8 @@
             </intent-filter>
         </service>
 
-        <service android:name=".ShugoService"/>
+        <service android:name=".ShugoService" />
+
         <receiver android:name=".ShugoService$ShugoBroadcastReceiver"></receiver>
 
         <receiver android:name=".HomeOnClickService$HomeOnClickReceiver"></receiver>
@@ -35,6 +38,7 @@
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>

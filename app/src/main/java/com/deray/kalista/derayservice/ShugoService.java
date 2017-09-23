@@ -26,7 +26,7 @@ public class ShugoService extends Service {
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         ShugoBroadcastReceiver shugoBroadcastReceiver = new ShugoBroadcastReceiver();
         registerReceiver(shugoBroadcastReceiver, filter);
-        return super.onStartCommand(intent, flags, startId);
+        return START_REDELIVER_INTENT;
     }
 
     public class ShugoBroadcastReceiver extends BroadcastReceiver {
@@ -41,10 +41,8 @@ public class ShugoService extends Service {
                     isServiceRun = true;
                 }
             }
-            if (!isServiceRun) {
-                Intent startService = new Intent(context, MainActivity.class);
-                startActivity(startService);
-            }
+            Intent startService = new Intent(context, HomeOnClickService.class);
+            startService(startService);
         }
     }
 }

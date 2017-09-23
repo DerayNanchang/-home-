@@ -8,8 +8,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * Created by Deray on 2017/9/19.
@@ -35,10 +38,15 @@ public class HomeOnClickService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mAdminName = intent.getParcelableExtra("1");
+        if (mAdminName == null) {
+            SharedPreferences compomemt = getSharedPreferences("compomemt", MODE_PRIVATE);
+            String name = compomemt.getString("name", "");
+            mAdminName = JSON.parseObject(name, ComponentName.class);
+        }
         homeOnClickReceiver = new HomeOnClickReceiver();
         IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(homeOnClickReceiver, homeFilter);
-        return super.onStartCommand(intent, flags, startId);
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -50,8 +58,6 @@ public class HomeOnClickService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent("deray.kalista.reset_lock");
-        sendBroadcast(intent);
     }
 
     public class HomeOnClickReceiver extends BroadcastReceiver {
@@ -66,13 +72,12 @@ public class HomeOnClickService extends Service {
             // 查看文档发现 在 o 弃用并且不会返回第三方开启的服务
             for (ActivityManager.RunningServiceInfo serviceInfo : systemService.getRunningServices(Integer.MAX_VALUE)) {
                 if ("com.deray.kalista.derayservice.ShugoService".equals(serviceInfo.service.getClassName())) {
+                    System.out.println(serviceInfo.service.getClassName());
                     isServiceRun = true;
                 }
             }
-            if (!isServiceRun) {
-                Intent startService = new Intent(context, MainActivity.class);
-                startService(startService);
-            }
+            Intent startService = new Intent(context, ShugoService.class);
+            startService(startService);
 
             if (System.currentTimeMillis() - lastTime <= EXIT) {
                 if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
