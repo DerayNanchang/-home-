@@ -24,16 +24,17 @@
             </intent-filter>
         </service>
 
+        <service android:name=".ShugoService"/>
+        <receiver android:name=".ShugoService$ShugoBroadcastReceiver"></receiver>
 
         <receiver android:name=".HomeOnClickService$HomeOnClickReceiver"></receiver>
         <receiver
             android:name=".AdminManageReceiver"
+            android:description="@string/home"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
-
             <meta-data
-                android:name="deray.kalista.reset_lock"
+                android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
-
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>

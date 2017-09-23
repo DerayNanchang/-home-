@@ -1,5 +1,6 @@
 package com.deray.kalista.derayservice;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -59,10 +60,20 @@ public class HomeOnClickService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (intent.getAction().equals("deray.kalista.reset_lock")) {
-                Intent in = new Intent(context, MainActivity.class);
-                startActivity(in);
+            boolean isServiceRun = false;
+
+            ActivityManager systemService = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            // 查看文档发现 在 o 弃用并且不会返回第三方开启的服务
+            for (ActivityManager.RunningServiceInfo serviceInfo : systemService.getRunningServices(Integer.MAX_VALUE)) {
+                if ("com.deray.kalista.derayservice.ShugoService".equals(serviceInfo.service.getClassName())) {
+                    isServiceRun = true;
+                }
             }
+            if (!isServiceRun) {
+                Intent startService = new Intent(context, MainActivity.class);
+                startService(startService);
+            }
+
             if (System.currentTimeMillis() - lastTime <= EXIT) {
                 if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
                     String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);

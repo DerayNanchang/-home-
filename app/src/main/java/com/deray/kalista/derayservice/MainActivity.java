@@ -16,9 +16,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 开启
+        findViewById(R.id.button).setOnClickListener(this);
+
+        // 开启
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         showAdminManagement(mAdminName);
-
         Intent intent = new Intent(this, HomeOnClickService.class);
         intent.putExtra("1",mAdminName);
         startService(intent);
@@ -35,11 +37,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public void onClick(View view) {
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onClick(View view) {
     }
 }
