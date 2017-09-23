@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.deray.kalista.derayservice">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name=".HomeOnClickService">
+            <!-- 为防止Service被系统回收，可以通过提高优先级解决，1000是最高优先级，数字越小，优先级越低 -->
+            <intent-filter android:priority="1000">
+                <action android:name="com.deray.kalista.derayservice" />
+            </intent-filter>
+        </service>
+
+
+        <receiver android:name=".HomeOnClickService$HomeOnClickReceiver"></receiver>
+        <receiver
+            android:name=".AdminManageReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+
+            <meta-data
+                android:name="deray.kalista.reset_lock"
+                android:resource="@xml/device_admin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+            <intent-filter android:priority="1000">
+                <action android:name="com.deray.kalista.derayservice" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
